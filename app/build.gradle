@@ -24,21 +24,22 @@ ext {
     espressoVersion = "3.1.0"
     testsVersion = "1.1.0"
     powermockVersion = "1.6.5"
+    constraintLayoutVersion = "1.1.3"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:${androidVersion}"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation "com.android.support:design:${androidVersion}"
+    implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
     implementation "com.jakewharton:butterknife:${butterknifeVersion}"
     implementation 'io.apisense:rhino-android:1.1.1'
-    implementation 'com.android.support:design:28.0.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation "org.powermock:powermock:${powermockVersion}"
     testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
     testImplementation "org.powermock:powermock-api-mockito:${powermockVersion}"
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation "androidx.test:runner:${testsVersion}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${espressoVersion}"
 
 }
