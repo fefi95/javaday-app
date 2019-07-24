@@ -53,6 +53,11 @@ public class CalculatorActivityMVP extends AppCompatActivity implements Calculat
         mPresenter.calculateResult(eResults.getText().toString());
     }
 
+    @OnClick(R.id.button_del)
+    public void onClickDelete(View v){
+        mPresenter.deleteUpdateText(eResults.getText().toString());
+    }
+
     @Override
     public void updateInputText(CharSequence text){
         eResults.setText(text);

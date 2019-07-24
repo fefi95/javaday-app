@@ -1,5 +1,6 @@
 package com.example.scastellanos.javaday.CalculatorMVP;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +36,12 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
         }
     }
 
+    @Override
+    public void deleteUpdateText(String s) {
+        String text = removeLastCharOptional(s);
+        mView.updateInputText(text);
+    }
+
     private Boolean isValidExpression(CharSequence expr) {
         Matcher m = mMathPtrn.matcher(expr);
         return m.matches();
@@ -43,5 +50,13 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
     private Double evalExpression(CharSequence text) throws ScriptException {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");
         return (Double)engine.eval(text.toString());
+    }
+
+    // TODO: Move to utils
+    private String removeLastCharOptional(String s){
+        return Optional.ofNullable(s)
+                .filter(str -> str.length() != 0)
+                .map(str -> str.substring(0, str.length() - 1))
+                .orElse(s);
     }
 }

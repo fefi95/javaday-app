@@ -33,43 +33,43 @@ public class CalculatorPresenterMVPTest {
     }
 
     @Test
-    public void addTextIfValid_valid_DecimalExpr() {
+    public void addTextIfValid_valid_decimalExpr() {
         presenterMVP.addTextIfValid("3", ".");
         verify(activityMVP, times(1)).updateInputText("3.");
     }
 
     @Test
-    public void addTextIfValid_notValid_ExprPlus() {
+    public void addTextIfValid_notValid_exprPlus() {
         presenterMVP.addTextIfValid("3+", "+");
         verify(activityMVP, times(0)).updateInputText("3++");
     }
 
     @Test
-    public void addTextIfValid_notValid_ExprMinus() {
+    public void addTextIfValid_notValid_exprMinus() {
         presenterMVP.addTextIfValid("3+", "-");
         verify(activityMVP, times(0)).updateInputText("3+-");
     }
 
     @Test
-    public void addTextIfValid_notValid_ExprMul() {
+    public void addTextIfValid_notValid_exprMul() {
         presenterMVP.addTextIfValid("3+", "*");
         verify(activityMVP, times(0)).updateInputText("3+*");
     }
 
     @Test
-    public void addTextIfValid_notValid_ExprDiv() {
+    public void addTextIfValid_notValid_exprDiv() {
         presenterMVP.addTextIfValid("3+", "/");
         verify(activityMVP, times(0)).updateInputText("3+/");
     }
 
     @Test
-    public void addTextIfValid_notValid_ExprDot() {
+    public void addTextIfValid_notValid_exprDot() {
         presenterMVP.addTextIfValid("3+", ".");
         verify(activityMVP, times(0)).updateInputText("3+.");
     }
 
     @Test
-    public void addTextIfValid_notValid_DecimalExpr() {
+    public void addTextIfValid_notValid_decimalExpr() {
         presenterMVP.addTextIfValid("3.", ".");
         verify(activityMVP, times(0)).updateInputText("3..");
     }
@@ -87,4 +87,25 @@ public class CalculatorPresenterMVPTest {
         presenterMVP.calculateResult("3++");
         verify(activityMVP, times(0)).updateInputText("");
     }
+
+    // Tests for deleteUpdateText
+
+    @Test
+    public void deleteUpdateText_empty(){
+        presenterMVP.deleteUpdateText("");
+        verify(activityMVP, times(1)).updateInputText("");
+    }
+
+    @Test
+    public void deleteUpdateText_oneChar(){
+        presenterMVP.deleteUpdateText("3");
+        verify(activityMVP, times(1)).updateInputText("");
+    }
+
+    @Test
+    public void deleteUpdateText_multipleChars(){
+        presenterMVP.deleteUpdateText("3+5");
+        verify(activityMVP, times(1)).updateInputText("3+");
+    }
+
 }

@@ -8,5 +8,6 @@ public interface CalculatorContractMVP {
     interface Presenter {
         void calculateResult(String text);
         void addTextIfValid(String text, String charToAdd);
+        void deleteUpdateText(String s);
     }
 }
