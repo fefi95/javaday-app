@@ -1,9 +1,5 @@
 package com.example.scastellanos.javaday.CalculatorMVP;
 
-import android.widget.Button;
-
-import javax.script.ScriptException;
-
 public interface CalculatorContractMVP {
     interface View {
         void updateInputText(CharSequence text);

@@ -15,8 +15,8 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
     @Override
     public void calculateResult(String expr) {
         try {
-            evalText(expr);
-            mView.updateInputText(expr);
+            Double res = evalExpression(expr);
+            mView.updateInputText(res.toString());
         } catch (Exception e) {
             // handle error
         }
@@ -35,7 +35,7 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
         return true;
     }
 
-    private Double evalText(CharSequence text) throws ScriptException {
+    private Double evalExpression(CharSequence text) throws ScriptException {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");
         return (Double)engine.eval(text.toString());
     }
