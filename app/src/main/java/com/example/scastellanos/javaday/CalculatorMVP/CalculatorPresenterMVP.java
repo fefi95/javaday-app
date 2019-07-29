@@ -1,5 +1,7 @@
 package com.example.scastellanos.javaday.CalculatorMVP;
 
+import com.example.scastellanos.javaday.ApiService.ApiService;
+
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,11 +10,16 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
 
     CalculatorContractMVP.View mView;
     private final String mathRegex = "^([-]?\\d+(\\.\\d*)?)([-+/*]\\d+(\\.\\d*)?)*[-+/*]?";
     private Pattern mMathPtrn = Pattern.compile(mathRegex);
+    private ApiService newtonService = new ApiService();
 
     public CalculatorPresenterMVP(CalculatorContractMVP.View view){
         mView = view;
@@ -21,8 +28,16 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
     @Override
     public void calculateResult(String expr) {
         try {
-            Double res = evalExpression(expr);
-            mView.updateInputText(res.toString());
+//            Double res = evalExpression(expr);
+//            mView.updateInputText(res.toString());
+            Disposable d = newtonService.evalExpression(expr)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            res -> mView.updateInputText(res.getResult()),
+                            Throwable::printStackTrace);
+//            d.dispose();
+
         } catch (Exception e) {
             // handle error
         }
