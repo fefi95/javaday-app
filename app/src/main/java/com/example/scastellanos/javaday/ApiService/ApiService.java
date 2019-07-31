@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiService {
 
+    public static String BASE_URL = "https://newton.now.sh/";
     private ApiEndpoints newtonApi;
 
     public ApiService() {
@@ -25,11 +26,6 @@ public class ApiService {
     }
 
     public Single<NewtonModel> evalExpression(String expr) {
-        return newtonApi.simplify(expr)
-//                .map(NewtonModel::getResult)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-                ;
-//                ;
+        return newtonApi.simplify(expr);
     }
 }

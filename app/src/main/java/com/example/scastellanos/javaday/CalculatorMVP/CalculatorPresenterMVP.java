@@ -27,20 +27,12 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
 
     @Override
     public void calculateResult(String expr) {
-        try {
-//            Double res = evalExpression(expr);
-//            mView.updateInputText(res.toString());
-            Disposable d = newtonService.evalExpression(expr)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            res -> mView.updateInputText(res.getResult()),
-                            Throwable::printStackTrace);
-//            d.dispose();
-
-        } catch (Exception e) {
-            // handle error
-        }
+        Disposable d = newtonService.evalExpression(expr)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        res -> mView.updateInputText(res.getResult()),
+                        Throwable::printStackTrace);
     }
 
     @Override
@@ -60,11 +52,6 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
     private Boolean isValidExpression(CharSequence expr) {
         Matcher m = mMathPtrn.matcher(expr);
         return m.matches();
-    }
-
-    private Double evalExpression(CharSequence text) throws ScriptException {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");
-        return (Double)engine.eval(text.toString());
     }
 
     // TODO: Move to utils
