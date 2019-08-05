@@ -2,13 +2,10 @@ package com.example.scastellanos.javaday.CalculatorMVP;
 
 import com.example.scastellanos.javaday.ApiService.ApiService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -20,6 +17,7 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
     private final String mathRegex = "^([-]?\\d+(\\.\\d*)?)([-+/*]\\d+(\\.\\d*)?)*[-+/*]?";
     private Pattern mMathPtrn = Pattern.compile(mathRegex);
     private ApiService newtonService = new ApiService();
+    private ArrayList<Disposable> disposables = new ArrayList<>();
 
     public CalculatorPresenterMVP(CalculatorContractMVP.View view){
         mView = view;
@@ -33,6 +31,8 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
                 .subscribe(
                         res -> mView.updateInputText(res.getResult()),
                         Throwable::printStackTrace);
+
+        disposables.add(d);
     }
 
     @Override
@@ -44,9 +44,15 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
     }
 
     @Override
-    public void deleteUpdateText(String s) {
-        String text = removeLastCharOptional(s);
-        mView.updateInputText(text);
+    public void deleteLastChar(String text) {
+        mView.updateInputText(removeLastCharOptional(text));
+    }
+
+    @Override
+    public void clearDisposables(){
+        for (Disposable d: disposables) {
+            d.dispose();
+        }
     }
 
     private Boolean isValidExpression(CharSequence expr) {
@@ -54,7 +60,6 @@ public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
         return m.matches();
     }
 
-    // TODO: Move to utils
     private String removeLastCharOptional(String s){
         return Optional.ofNullable(s)
                 .filter(str -> str.length() != 0)

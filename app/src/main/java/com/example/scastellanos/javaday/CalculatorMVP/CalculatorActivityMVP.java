@@ -2,7 +2,6 @@ package com.example.scastellanos.javaday.CalculatorMVP;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,19 +14,6 @@ import butterknife.OnClick;
 
 public class CalculatorActivityMVP extends AppCompatActivity implements CalculatorContractMVP.View {
 
-    @BindView(R.id.button_0) Button btn0;
-    @BindView(R.id.button_1) Button btn1;
-    @BindView(R.id.button_2) Button btn2;
-    @BindView(R.id.button_3) Button btn3;
-    @BindView(R.id.button_4) Button btn4;
-    @BindView(R.id.button_5) Button btn5;
-    @BindView(R.id.button_6) Button btn6;
-    @BindView(R.id.button_7) Button btn7;
-    @BindView(R.id.button_8) Button btn8;
-    @BindView(R.id.button_9) Button btn9;
-    @BindView(R.id.button_dot) Button btnDot;
-    @BindView(R.id.button_del) Button btnDel;
-    @BindView(R.id.button_res) Button btnRes;
     @BindView(R.id.results) EditText eResults;
     CalculatorContractMVP.Presenter mPresenter;
 
@@ -55,12 +41,17 @@ public class CalculatorActivityMVP extends AppCompatActivity implements Calculat
 
     @OnClick(R.id.button_del)
     public void onClickDelete(View v){
-        mPresenter.deleteUpdateText(eResults.getText().toString());
+        mPresenter.deleteLastChar(eResults.getText().toString());
     }
 
     @Override
     public void updateInputText(CharSequence text){
         eResults.setText(text);
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        mPresenter.clearDisposables();
     }
 }
 
