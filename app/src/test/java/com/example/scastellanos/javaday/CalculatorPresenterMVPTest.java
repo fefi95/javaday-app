@@ -24,6 +24,7 @@ public class CalculatorPresenterMVPTest {
 
     private CalculatorPresenterMVP presenterMVP;
     private MockWebServer server;
+
     @Rule
     public TrampolineSchedulerRule rule = new TrampolineSchedulerRule();
 

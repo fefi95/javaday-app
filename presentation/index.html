@@ -1,0 +1,538 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/custom.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+          <section data-background-image="http://www.fredzone.org/wp-content/uploads/2019/07/smartphone-2-640x425.jpg" data-background-opacity="0.2">
+            <h1>Create a testable Android App and don't fail trying: the MVP pattern</h1>
+            <p>Stefani Castellanos</p>
+            <small><a href="https://twitter.com/Fefi95">@fefi95</a></small>
+            <aside class="notes">
+              <ul>
+                <li>Queremos software de calidad</li>
+                <li>No siempre podemos hacer pruebas manuales, necesitamos automatizar</li>
+                <li>Es más difícil probar aplicaciones móviles (por el emulador y el framework)</li>
+                <li>MVP nos ayuda a aislar la lógica para facilitar las pruebas</li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>Agenda</h2>
+            <ul>
+              <li>MVC y MVP</li>
+              <li>Componentes de Android</li>
+              <li>Ejemplo</li>
+              <li>Pruebas</li>
+              <li>Buenas prácticas y consejos</li>
+              <!-- <li>Conclusiones</li> -->
+            </ul>
+          </section>
+          <!-- <section>
+            <h2>Introducción</h2>
+            <ul>
+              <li class="fragment fade-up">Es difícil probar aplicaciones móviles</li>
+              <li class="fragment fade-up">Más pruebas implica código más confiable y mejor</li>
+              <li class="fragment fade-up">El patrón Modelo-Vista-Presentador facilita la tarea</li>
+            </ul>
+            <aside class="notes">
+            </aside>
+          </section> -->
+        </section>
+
+        <section>
+          <section>
+            <h1>MVC y MVP</h1>
+          </section>
+          <!-- MVC -->
+          <section data-transition="slide-in fade-out">
+            <h2>MVC</h2>
+            <br>
+            <img data-src="/img/model.png" alt="model">
+            <aside class="notes">
+              Es la capa de datos. Ej: User.
+            </aside>
+          </section>
+          <section data-transition="fade">
+            <h2>MVC</h2>
+            <br>
+            <img data-src="/img/MV.png" alt="model-view">
+            <aside class="notes">
+              Lo que ve el usuario y con lo que interactua: botones, eventos ..
+            </aside>
+          </section>
+          <section data-transition="fade">
+            <h2>MVC</h2>
+            <br>
+            <img data-src="/img/MVC-1.png" alt="MVC">
+            <aside class="notes">
+              Encapsula la lógica del negocio, responde a las interacciones de los usuarios.
+            </aside>
+          </section>
+          <section data-transition="fade">
+            <h2>MVC</h2>
+            <br>
+            <img data-src="/img/MVC-2.png" alt="MVC">
+            <aside class="notes">
+              Un submit en un formulario puede afectar al modelo y este actualizar la Vista
+              Tambien un click en la página ocasiona que el controlador envie otra pagina a la vista.
+            </aside>
+          </section>
+          <!-- MVP -->
+          <section data-transition="slide-in fade-out">
+            <h2>MVP</h2>
+            <br>
+            <img data-src="/img/MV.png" alt="model-view">
+          </section>
+          <section data-transition="fade">
+            <h2>MVP</h2>
+            <br>
+            <img data-src="/img/MVP-1.png" alt="MVP">
+          </section>
+          <section data-transition="fade">
+            <h2>MVP</h2>
+            <br>
+            <img data-src="/img/MVP-2.png" alt="MVP">
+            <aside class="notes">
+              El controlador comunica a la vista y el modelo. Actua de middleman.
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Componentes de Android</h2>
+            <ul>
+              <li>Actividades</li>
+              <li>Servicios</li>
+              <li>Proveedores de Contenido</li>
+              <li>Receptores de mensaje</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Actividades</h2>
+            <br>
+            <img data-src="/img/activity.png" alt="android-activity" width="70%">
+            <aside class="notes">
+              Una Activity es un componente de la aplicación que contiene una pantalla con la que los usuarios pueden interactuar para realizar una acción 
+            </aside>
+          </section>
+          <section>
+            <h2>Servicios</h2>
+            <br>
+            <img data-src="/img/services.png" alt="android-services">
+            <aside class="notes">
+              Un Service es un componente de una aplicación que puede realizar operaciones de larga ejecución en segundo plano y que no proporciona una interfaz de usuario. Otro componente de la aplicación puede iniciar un servicio y continuará ejecutándose en segundo plano aunque el usuario cambie a otra aplicación. Además, un componente puede enlazarse con un servicio para interactuar con él e incluso realizar una comunicación entre procesos (IPC). Por ejemplo, un servicio puede manejar transacciones de red, reproducir música, realizar I/O de archivos o interactuar con un proveedor de contenido, todo en segundo plano.
+            </aside>
+          </section>
+          <section>
+            <h2>Proveedores de Contenido</h2>
+            <br>
+            <img data-src="/img/providers.png" alt="android-providers">
+            <aside class="notes">
+              Un proveedor de contenido administra el acceso a un repositorio central de datos. Un proveedor forma parte de una aplicación de Android y a menudo proporciona su propia IU para trabajar con los datos. No obstante, los proveedores de contenido están principalmente orientados a que los usen otras aplicaciones que acceden al proveedor usando un objeto de cliente del proveedor. 
+            </aside>
+          </section>
+          <section>
+            <h2>Receptores de mensaje</h2>
+            <br>
+            <img data-src="/img/broadcast-receivers.png" alt="android-receivers">
+            <aside class="notes">
+              Un receptor de mensajes es un componente que responde a los anuncios de mensajes en todo el sistema. Muchos mensajes son originados por el sistema; por ejemplo, un mensaje que anuncie que se apagó la pantalla, que la batería tiene poca carga o que se tomó una foto. Las aplicaciones también pueden iniciar mensajes; por ejemplo, para permitir que otras aplicaciones sepan que se descargaron datos al dispositivo y están disponibles para usarlos. Si bien los receptores de mensajes no exhiben una interfaz de usuario, pueden crear una notificación de la barra de estado para alertar al usuario cuando se produzca un evento de mensaje. Aunque, comúnmente, un receptor de mensajes es simplemente una "puerta de enlace" a otros componentes y está destinado a realizar una cantidad mínima de trabajo. 
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <h2>Ejemplo</h2>
+          <img data-src="/img/app.png" alt="app-screenshot" width="25%">
+          <aside class="notes">
+            La aplicación de ejemplo en un calculadora. Utilicé el API de newton para realizar las operaciones
+            matemáticas, en este caso son sencillas pero el API permite mucho más.
+          </aside>
+        </section>
+
+        <section>
+          <h2>Ejemplo - MVC</h2>
+          <br>
+          <img data-src="/img/MVC-android.png" alt="MVC-android">
+        </section>
+
+        <section>
+          <h2>MVC</h2>
+            <pre><code class="java" data-trim data-line-numbers="1,9-13, 20-25, 28-30, 33-56,64">
+                public class CalculatorActivity extends AppCompatActivity {
+                    @BindView(R.id.results) EditText eResults;
+                    private ArrayList&lt;Disposable&gt; disposables = new ArrayList&lt;&gt;();
+                    private ApiService newtonService = new ApiService();
+                    private final String mathRegex = "^([-]?\\d+(\\.\\d*)?)([-+/*]\\d+(\\.\\d*)?)*[-+/*]?";
+                    private Pattern mMathPtrn = Pattern.compile(mathRegex);
+
+                    @Override
+                    protected void onCreate(Bundle savedInstanceState) {
+                        super.onCreate(savedInstanceState);
+                        setContentView(R.layout.activity_calculator);
+                        ButterKnife.bind(this);
+                    }
+
+                    @OnClick({ R.id.button_1, R.id.button_2, R.id.button_3,
+                            R.id.button_4, R.id.button_5, R.id.button_6,
+                            R.id.button_7, R.id.button_8, R.id.button_9,
+                            R.id.button_dot, R.id.button_0, R.id.button_plus,
+                            R.id.button_minus, R.id.button_mul, R.id.button_div })
+                    public void onClickSymbol(Button v){
+                        CharSequence expr = eResults.getText().toString().concat(v.getText().toString());
+                        if(isValidExpression(expr)){
+                            addTextToInput(v.getText());
+                        }
+                    }
+
+                    @OnClick(R.id.button_res)
+                    public void OnClickEqual(View v){
+                        evalText(eResults.getText().toString());
+                    }
+
+                    @OnClick(R.id.button_del)
+                    public void onClickDelete(View v){
+                        eResults.setText(removeLastCharOptional(eResults.getText().toString()));
+                    }
+
+                    private void evalText(String expr) {
+                        Disposable d = newtonService.evalExpression(expr)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        res -> eResults.setText(res.getResult()),
+                                        Throwable::printStackTrace);
+
+                        disposables.add(d);
+                    }
+
+                    private void addTextToInput(CharSequence text) {
+                        CharSequence res = eResults.getText().append(text);
+                        eResults.setText(res);
+                    }
+
+                    private Boolean isValidExpression(CharSequence expr){
+                        Matcher m = mMathPtrn.matcher(expr);
+                        return m.matches();
+                    }
+
+                    private String removeLastCharOptional(String s){
+                        return Optional.ofNullable(s)
+                                .filter(str -> str.length() != 0)
+                                .map(str -> str.substring(0, str.length() - 1))
+                                .orElse(s);
+                    }
+                }
+              </code></pre>
+        </section>
+
+        <section>
+          <h2>Ejemplo - MVP</h2>
+          <br>
+          <img data-src="/img/MVP-android.png" alt="MVP-android">
+        </section>
+
+        <section>
+          <section>
+            <h1>MVP - Actividad</h1>
+            <pre><code class="java" data-trim data-line-numbers="1, 4, 7-12, 19-21, 24-26, 29-36, 42">
+                public class CalculatorActivityMVP extends AppCompatActivity implements CalculatorContractMVP.View {
+  
+                    @BindView(R.id.results) EditText eResults;
+                    CalculatorContractMVP.Presenter mPresenter;
+  
+                    @Override
+                    protected void onCreate(Bundle savedInstanceState) {
+                        super.onCreate(savedInstanceState);
+                        setContentView(R.layout.activity_calculator);
+                        ButterKnife.bind(this);
+                        mPresenter = new CalculatorPresenterMVP(this);
+                    }
+  
+                    @OnClick({ R.id.button_1, R.id.button_2, R.id.button_3,
+                            R.id.button_4, R.id.button_5, R.id.button_6,
+                            R.id.button_7, R.id.button_8, R.id.button_9,
+                            R.id.button_dot, R.id.button_0, R.id.button_plus,
+                            R.id.button_minus, R.id.button_mul, R.id.button_div })
+                    public void onClickSymbol(Button v){
+                        mPresenter.addTextIfValid(eResults.getText().toString(), v.getText().toString());
+                    }
+  
+                    @OnClick(R.id.button_res)
+                    public void onClickEqual(View v){
+                        mPresenter.calculateResult(eResults.getText().toString());
+                    }
+  
+                    @OnClick(R.id.button_del)
+                    public void onClickDelete(View v){
+                        mPresenter.deleteLastChar(eResults.getText().toString());
+                    }
+  
+                    @Override
+                    public void updateInputText(CharSequence text){
+                        eResults.setText(text);
+                    }
+  
+                    public void onDestroy(){
+                        super.onDestroy();
+                        mPresenter.clearDisposables();
+                    }
+                }
+              </code></pre>
+          </section>
+  
+          <section>
+            <h1>MVP - Presentador</h1>
+            <pre><code class="java" data-trim data-line-numbers="1,7-12, 14-56">
+                public class CalculatorPresenterMVP implements CalculatorContractMVP.Presenter {
+  
+                    CalculatorContractMVP.View mView;
+                    private final String mathRegex = "^([-]?\\d+(\\.\\d*)?)([-+/*]\\d+(\\.\\d*)?)*[-+/*]?";
+                    private Pattern mMathPtrn = Pattern.compile(mathRegex);
+                    private ApiService newtonService = new ApiService();
+                    private ArrayList&lt;Disposable&gt; disposables = new ArrayList&lt;&gt;();
+  
+                    public CalculatorPresenterMVP(CalculatorContractMVP.View view){
+                        mView = view;
+                    }
+  
+                    @Override
+                    public void calculateResult(String expr) {
+                        Disposable d = newtonService.evalExpression(expr)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        res -> mView.updateInputText(res.getResult()),
+                                        Throwable::printStackTrace);
+  
+                        disposables.add(d);
+                    }
+  
+                    @Override
+                    public void addTextIfValid(String text, String charToAdd) {
+                        String tempExpr = text.concat(charToAdd);
+                        if(isValidExpression(tempExpr)) {
+                            mView.updateInputText(tempExpr);
+                        }
+                    }
+  
+                    @Override
+                    public void deleteLastChar(String text) {
+                        mView.updateInputText(removeLastCharOptional(text));
+                    }
+  
+                    @Override
+                    public void clearDisposables(){
+                        for (Disposable d: disposables) {
+                            d.dispose();
+                        }
+                    }
+  
+                    private Boolean isValidExpression(CharSequence expr) {
+                        Matcher m = mMathPtrn.matcher(expr);
+                        return m.matches();
+                    }
+  
+                    private String removeLastCharOptional(String s){
+                        return Optional.ofNullable(s)
+                                .filter(str -> str.length() != 0)
+                                .map(str -> str.substring(0, str.length() - 1))
+                                .orElse(s);
+                    }
+                }
+              </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section data-transition="slide-in fade-out">
+            <h2>Pruebas</h2>
+            <pre><code class="java" data-trim data-line-numbers>
+                @Mock
+                private CalculatorContractMVP.View activityMVP;
+            
+                private CalculatorPresenterMVP presenterMVP;
+                private MockWebServer server;
+            
+                @Rule
+                public TrampolineSchedulerRule rule = new TrampolineSchedulerRule();
+            
+                @Before
+                public void startMockServer() throws  Exception {
+                    server = new MockWebServer();
+                    server.start();
+                    ApiService.BASE_URL = server.url("/").toString();
+            
+                }
+            
+                @Before
+                public void setUp() {
+                    MockitoAnnotations.initMocks(this);
+                    presenterMVP = new CalculatorPresenterMVP(activityMVP);
+                }
+            </code></pre>
+          </section>
+          <section data-transition="fade">
+            <h2>Pruebas</h2>
+            <pre><code class="java" data-trim data-line-numbers="3-13" >
+                ...
+
+                @Test
+                public void addTextIfValid_valid_simpleExpr() {
+                    presenterMVP.addTextIfValid("3+", "4");
+                    verify(activityMVP, times(1)).updateInputText("3+4");
+                }
+  
+                @Test
+                public void addTextIfValid_notValid_exprPlus() {
+                    presenterMVP.addTextIfValid("3+", "+");
+                    verify(activityMVP, times(0)).updateInputText("3++");
+                }
+
+                ...
+
+
+
+
+                ,
+              </code></pre>
+          </section>
+          <section data-transition="fade">
+            <h2>Pruebas</h2>
+            <pre><code class="java" data-trim data-line-numbers="3-26">
+                ...
+
+                @Test
+                public void calculateResult_validExpr() throws Exception {
+                    NewtonModel operation = new NewtonModel("simplify", "3+4", "7");
+                    server.enqueue(new MockResponse()
+                            .setResponseCode(200)
+                            .setBody(new Gson().toJson(operation)));
+  
+                    CalculatorPresenterMVP presenterMVP2 = new CalculatorPresenterMVP(activityMVP);
+                    presenterMVP2.calculateResult("3+4");
+  
+                    verify(activityMVP).updateInputText("7");
+                }
+  
+                @Test
+                public void calculateResult_notValidExpr(){
+                    NewtonModel operation = new NewtonModel("simplify", "3++", "error");
+                    server.enqueue(new MockResponse()
+                            .setResponseCode(200)
+                            .setBody(new Gson().toJson(operation)));
+  
+                    CalculatorPresenterMVP presenterMVP2 = new CalculatorPresenterMVP(activityMVP);
+                    presenterMVP2.calculateResult("3++");
+                    verify(activityMVP, times(0)).updateInputText("");
+                }
+  
+                ...
+              </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section data-transition="slide-in fade-out">
+            <h2>Buenas prácticas y consejos</h2>
+            <ul>
+              <li class="fragment fade-up">Vista pasiva</li>
+              <li class="fragment fade-up">Presentador independiente del framework (Android)</li>
+              <li class="fragment fade-up">Escribe un "contrato" entre la Vista y el Presentador</li>
+              <br><br><br><br><br><br><br><br>
+            </ul>
+          </section>
+          <section data-transition="none">
+            <h2>Buenas prácticas y consejos</h2>
+            <ul>
+              <li>Vista pasiva</li>
+              <li>Presentador independiente del framework (Android)</li>
+              <li>Escribe un "contrato" entre la Vista y el Presentador</li>
+              <pre><code class="java" data-trim data-line-numbers>
+                  public interface CalculatorContractMVP {
+                      interface View {
+                          void updateInputText(CharSequence text);
+                      }
+                  
+                      interface Presenter {
+                          void calculateResult(String text);
+                          void addTextIfValid(String text, String charToAdd);
+                          void deleteLastChar(String s);
+                          void clearDisposables();
+                      }
+                  }
+                </code></pre>
+            </ul>
+          </section>
+          <section data-transition="none">
+            <h2>Buenas prácticas y consejos</h2>
+            <ul>
+              <li>Vista pasiva</li>
+              <li>Presentador independiente del framework (Android)</li>
+              <li>Escribe un "contrato" entre la Vista y el Presentador</li>
+              <li class="fragment fade-up">No agregar callbacks del ciclo de vida de la Actividad al Presentador</li>
+            </ul>
+            <br><br><br><br><br><br><br><br>
+          </section>
+        </section>
+
+        <!-- <section>
+          <h1>Conclusiones</h1>
+          <ul>
+            <li>MVP se adapta mejor al desarrollo en Android porque permite descacoplar la logica, de las Vistas</li>
+            <li>Es más fácil realizar pruebas unitarias porque el Presentador no depende del framework</li>
+          </ul>
+        </section> -->
+
+        <section>
+          <h1>¿Preguntas?</h1>
+          <img data-src="/img/android-logo-question.png" width="25%" alt="MVP-android">
+        </section>
+        <section data-background-color="#177E89" data-background-image="/img/android-logo-peeking.png" data-background-size="20vw" data-background-position="bottom right">
+          <h1>¡Gracias!</h1>
+        </section>
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+        width: 1200,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
